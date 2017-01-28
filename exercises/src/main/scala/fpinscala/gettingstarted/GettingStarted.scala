@@ -5,48 +5,55 @@ package fpinscala.gettingstarted
 /** A documentation comment */
 object MyModule {
   def abs(n: Int): Int =
-    if (n < 0) -n
-    else n
+  if (n < 0) -n
+  else n
 
-  private def formatAbs(x: Int) = {
-    val msg = "The absolute value of %d is %d"
-    msg.format(x, abs(x))
-  }
+private def formatAbs(x: Int) = {
+  val msg = "The absolute value of %d is %d"
+  msg.format(x, abs(x))
+}
 
-  def main(args: Array[String]): Unit =
-    println(formatAbs(-42))
+def main(args: Array[String]): Unit =
+  println(formatAbs(-42))
 
-  // A definition of factorial, using a local, tail recursive function
-  def factorial(n: Int): Int = {
-    @annotation.tailrec
-    def go(n: Int, acc: Int): Int =
-      if (n <= 0) acc
-      else go(n-1, n*acc)
+// A definition of factorial, using a local, tail recursive function
+def factorial(n: Int): Int = {
+  @annotation.tailrec
+  def go(n: Int, acc: Int): Int =
+    if (n <= 0) acc
+    else go(n-1, n*acc)
 
-    go(n, 1)
-  }
+  go(n, 1)
+}
 
-  // Another implementation of `factorial`, this time with a `while` loop
-  def factorial2(n: Int): Int = {
-    var acc = 1
-    var i = n
-    while (i > 0) { acc *= i; i -= 1 }
-    acc
-  }
+// Another implementation of `factorial`, this time with a `while` loop
+def factorial2(n: Int): Int = {
+  var acc = 1
+  var i = n
+  while (i > 0) { acc *= i; i -= 1 }
+  acc
+}
 
-  // Exercise 1: Write a function to compute the nth fibonacci number
+// Exercise 1: Write a function to compute the nth fibonacci number
 
-  def fib(n: Int): Int = ???
+def fib(n: Int): Int = {
+  @annotation.tailrec
+  def go(a: Int, b: Int, n: Int): Int =
+    if (n < 1) a
+    else go(b, a+b, n - 1)
 
-  // This definition and `formatAbs` are very similar..
-  private def formatFactorial(n: Int) = {
-    val msg = "The factorial of %d is %d."
-    msg.format(n, factorial(n))
-  }
+  go(0, 1, n)
+}
 
-  // We can generalize `formatAbs` and `formatFactorial` to
-  // accept a _function_ as a parameter
-  def formatResult(name: String, n: Int, f: Int => Int) = {
+// This definition and `formatAbs` are very similar..
+private def formatFactorial(n: Int) = {
+  val msg = "The factorial of %d is %d."
+  msg.format(n, factorial(n))
+}
+
+// We can generalize `formatAbs` and `formatFactorial` to
+// accept a _function_ as a parameter
+def formatResult(name: String, n: Int, f: Int => Int) = {
     val msg = "The %s of %d is %d."
     msg.format(name, n, f(n))
   }
@@ -140,7 +147,20 @@ object PolymorphicFunctions {
 
   // Exercise 2: Implement a polymorphic function to check whether
   // an `Array[A]` is sorted
-  def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = ???
+  def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = {
+    @annotation.tailrec
+    def go(cur: Int, high: Int):Boolean = {
+      if (cur > high) true
+      else {
+        val a1 = as(cur)
+        val a2 = as(cur+1)
+        val greater = gt(a1, a2)
+        if (greater) false
+        else go(cur + 1, high)
+      }
+    }
+    go(0, as.length - 2)
+  }
 
   // Polymorphic functions are often so constrained by their type
   // that they only have one implementation! Here's an example:
