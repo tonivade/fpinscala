@@ -50,17 +50,37 @@ object List { // `List` companion object. Contains functions for creating and wo
     foldRight(ns, 1.0)(_ * _) // `_ * _` is more concise notation for `(x,y) => x * y`; see sidebar
 
 
-  def tail[A](l: List[A]): List[A] = ???
+  def tail[A](l: List[A]): List[A] = 
+    l match {
+      case Nil => Nil
+      case Cons(x, xs) => xs
+    }
 
-  def setHead[A](l: List[A], h: A): List[A] = ???
+  def setHead[A](l: List[A], h: A): List[A] = 
+    l match {
+      case Nil => Cons(h, Nil)
+      case Cons(x, xs) => Cons(h, Cons(x, xs))
+    }
 
-  def drop[A](l: List[A], n: Int): List[A] = ???
+  def drop[A](l: List[A], n: Int): List[A] = 
+    l match {
+      case Nil => Nil
+      case Cons(x, xs) => if (n > 0) drop(xs, n - 1) else Cons(x, xs)
+    }
 
-  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = ???
+  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = 
+    l match {
+      case Nil => Nil
+      case Cons(x, xs) => if (f(x)) Cons(x, dropWhile(xs, f)) else dropWhile(xs, f)
+    }
 
   def init[A](l: List[A]): List[A] = ???
 
-  def length[A](l: List[A]): Int = ???
+  def length[A](l: List[A]): Int = 
+    l match {
+      case Nil => 0
+      case Cons(x, xs) => 1 + length(xs)
+    }
 
   def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = ???
 
